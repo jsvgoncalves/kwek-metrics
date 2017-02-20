@@ -2,6 +2,8 @@
 #
 # This file is part of Kwek Metrics.
 
+"""Test Kwek flask app configurations and routes."""
+
 from kwek.model import Service as S
 from kwek.model import Metric as M
 

@@ -2,6 +2,8 @@
 #
 # This file is part of Kwek Metrics.
 
+"""Pytest configuration."""
+
 from os.path import join as pj
 import os.path
 

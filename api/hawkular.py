@@ -2,6 +2,9 @@
 #
 # This file is part of Kwek Metrics.
 
+"""Hawkular API calls."""
+
+
 import json
 
 import requests

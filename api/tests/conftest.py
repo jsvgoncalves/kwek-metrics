@@ -2,6 +2,8 @@
 #
 # This file is part of Kwek Metrics.
 
+"""Pytest configuration."""
+
 from os import path as osp
 import json
 

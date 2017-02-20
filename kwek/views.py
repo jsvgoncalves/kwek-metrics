@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Kwek Metrics.
-""" Kwek Views. """
+
+"""Kwek Metric web app views."""
 
 import json
 from urlparse import urljoin

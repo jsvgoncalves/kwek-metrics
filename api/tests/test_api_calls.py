@@ -2,6 +2,8 @@
 #
 # This file is part of Kwek Metrics.
 
+"""Test external API calling mechanism."""
+
 import responses
 
 from api.hawkular import query_api

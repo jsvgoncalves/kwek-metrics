@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Kwek Metrics.
-"""Kwek model."""
+
+"""Database models for Services and Metrics."""
 
 from database import db
 
