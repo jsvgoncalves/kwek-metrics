@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+<p>
+  You have access to {{projects|length}} projects.
+</p>
+<p>
+  In total, here are your stats:
+</p>
+<ul>
+  <li>Memory Usage: {{"{:.2f}".format(memory*0.000000953674)}} MiB</li>
+  <li>CPU Usage: {{cpu}} Millicores</li>
+  <li>Network Usage: {{"{:.2f}".format(network*0.0009765625)}} KiB/s</li>
+</ul>
+
+{% for project in projects %}
+	<a href="{{url_for('kwek.metrics', project=project['metadata']['name'])}}">
+    <h3>{{project['metadata']['annotations']['openshift.io/display-name']}}</h3>
+	</a>
+{% endfor %}
+
+
+
+{% endblock %}

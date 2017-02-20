@@ -1,0 +1,8 @@
+pytest
+pytest-cov
+pytest-pep8
+pytest-html
+pytest-xdist
+pytest-flask
+pep8
+responses==0.5.1

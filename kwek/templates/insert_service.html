@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+<ul>
+
+{% for service in services %}
+  <li>{{service}}</li>
+{% endfor %}
+</ul>
+
+<form action="{{ url_for('kwek.insert') }}" method="post">
+	<input type="text" name="service-name">
+</form>
+
+{% endblock %}

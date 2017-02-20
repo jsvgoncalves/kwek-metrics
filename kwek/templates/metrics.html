@@ -1,0 +1,175 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+<h2>{{project}}</h2>
+
+<p>Current status:</p>
+<ul>
+  <li>Memory Usage: {{"{:.2f}".format(memory[0]['avg']*0.000000953674)}} MiB</li>
+  <li>CPU Usage: {{cpu[0]['avg']}} Millicores</li>
+  <li>Network Usage: {{"{:.2f}".format(network[0]['avg']*0.0009765625)}} KiB/s</li>
+</ul>
+
+<h3>Memory Usage</h3>
+<svg id="memory" width="400" height="150"></svg>
+
+
+<h3>CPU Usage</h3>
+<svg id="cpu" width="400" height="150"></svg>
+
+
+<h3>Network</h3>
+<svg id="network" width="400" height="150"></svg>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+var memory = {{memory|tojson|safe}}
+var cpu = {{cpu|tojson|safe}}
+var network = {{network|tojson|safe}}
+
+var memory_vis = d3.select('#memory'),
+    cpu_vis = d3.select('#cpu'),
+    network_vis = d3.select('#network'),
+    WIDTH = 400,
+    HEIGHT = 150,
+    MARGINS = {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 100
+    },
+    // MEMORY
+    memory_xRange = d3.scaleLinear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(memory, function(d) {
+      return d.end;
+    }), d3.max(memory, function(d) {
+      return d.end;
+    })]),
+    memory_yRange = d3.scaleLinear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(memory, function(d) {
+      return d.median/1024;
+    }), d3.max(memory, function(d) {
+      return d.median/1024;
+    })]),
+    memory_xAxis = d3.axisBottom()
+    .scale(memory_xRange),
+    memory_yAxis = d3.axisLeft()
+    .scale(memory_yRange),
+
+    // CPU
+    cpu_xRange = d3.scaleLinear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(cpu, function(d) {
+      return d.end;
+    }), d3.max(cpu, function(d) {
+      return d.end;
+    })]),
+    cpu_yRange = d3.scaleLinear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(cpu, function(d) {
+      return d.avg;
+    }), d3.max(cpu, function(d) {
+      return d.avg;
+    })]),
+    cpu_xAxis = d3.axisBottom()
+    .scale(cpu_xRange),
+    cpu_yAxis = d3.axisLeft()
+    .scale(cpu_yRange),
+
+    // NETWORK
+    network_xRange = d3.scaleLinear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(network, function(d) {
+      return d.end;
+    }), d3.max(network, function(d) {
+      return d.end;
+    })]),
+    network_yRange = d3.scaleLinear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(network, function(d) {
+      return d.median;
+    }), d3.max(network, function(d) {
+      return d.median;
+    })]),
+    network_xAxis = d3.axisBottom()
+    .scale(network_xRange),
+    network_yAxis = d3.axisLeft()
+    .scale(network_yRange);
+
+
+
+/**
+ *  Add axis
+ */
+
+// memory_vis.append('svg:g')
+//   .attr('class', 'x axis')
+//   .attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')')
+//   .call(memory_xAxis);
+
+memory_vis.append('svg:g')
+  .attr('class', 'y axis')
+  .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
+  .call(memory_yAxis);
+
+cpu_vis.append('svg:g')
+  .attr('class', 'y axis')
+  .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
+  .call(cpu_yAxis);
+
+network_vis.append('svg:g')
+  .attr('class', 'y axis')
+  .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
+  .call(network_yAxis);
+
+
+/**
+ * Draw the line
+ */
+
+
+// Define the function
+var lineFunc = d3.line()
+  .x(function(d) {
+    return memory_xRange(d.end);
+  })
+  .y(function(d) {
+    return memory_yRange(d.median/1024);
+  })
+  .curve(d3.curveLinear); // curveBasis
+
+  // Define the function
+var cpu_line = d3.line()
+  .x(function(d) {
+    return cpu_xRange(d.end);
+  })
+  .y(function(d) {
+    return cpu_yRange(d.avg);
+  })
+  .curve(d3.curveLinear); // curveBasis
+
+  // Define the function
+var lineFunc3 = d3.line()
+  .x(function(d) {
+    return network_xRange(d.end);
+  })
+  .y(function(d) {
+    return network_yRange(d.median);
+  })
+  .curve(d3.curveLinear); // curveBasis
+
+// Append it to JSON
+
+network_vis.append('svg:path')
+  .attr('d', lineFunc3(network))
+  .attr('stroke', 'red')
+  .attr('stroke-width', 2)
+  .attr('fill', 'none');
+
+memory_vis.append('svg:path')
+  .attr('d', lineFunc(memory))
+  .attr('stroke', 'blue')
+  .attr('stroke-width', 2)
+  .attr('fill', 'none');
+
+cpu_vis.append('svg:path')
+  .attr('d', cpu_line(cpu))
+  .attr('stroke', 'green')
+  .attr('stroke-width', 2)
+  .attr('fill', 'none');
+</script>
+
+{% endblock %}

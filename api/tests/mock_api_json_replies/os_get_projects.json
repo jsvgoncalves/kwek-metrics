@@ -1,0 +1,113 @@
+{
+  "kind": "ProjectList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/oapi/v1/projects"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "api-test",
+        "selfLink": "/oapi/v1/projects/api-test",
+        "uid": "3e64dc51-eedf-11e6-8c17-123dee44c1c5",
+        "resourceVersion": "250297180",
+        "creationTimestamp": "2017-02-09T15:48:47Z",
+        "annotations": {
+          "openshift.io/description": "for api search results",
+          "openshift.io/display-name": "api-test",
+          "openshift.io/requester": "jgoncalv@redhat.com",
+          "openshift.io/sa.scc.mcs": "s0:c24,c4",
+          "openshift.io/sa.scc.supplemental-groups": "1000560000/10000",
+          "openshift.io/sa.scc.uid-range": "1000560000/10000"
+        }
+      },
+      "spec": {
+        "finalizers": [
+          "openshift.io/origin",
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "metrics",
+        "selfLink": "/oapi/v1/projects/metrics",
+        "uid": "765c3f22-ec79-11e6-85ef-12d3ba54a54b",
+        "resourceVersion": "245834533",
+        "creationTimestamp": "2017-02-06T14:35:10Z",
+        "annotations": {
+          "openshift.io/description": "",
+          "openshift.io/display-name": "metrics",
+          "openshift.io/requester": "jgoncalv@redhat.com",
+          "openshift.io/sa.scc.mcs": "s0:c33,c2",
+          "openshift.io/sa.scc.supplemental-groups": "1001060000/10000",
+          "openshift.io/sa.scc.uid-range": "1001060000/10000"
+        }
+      },
+      "spec": {
+        "finalizers": [
+          "openshift.io/origin",
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "custom-images",
+        "selfLink": "/oapi/v1/projects/custom-images",
+        "uid": "88afce2a-ee3e-11e6-ae42-12d3ba54a54b",
+        "resourceVersion": "249067779",
+        "creationTimestamp": "2017-02-08T20:38:22Z",
+        "annotations": {
+          "openshift.io/description": "A project containing custom images that can be used by all authenticated users on the cluster",
+          "openshift.io/display-name": "Custom Images",
+          "openshift.io/requester": "spurtell@redhat.com",
+          "openshift.io/sa.scc.mcs": "s0:c21,c0",
+          "openshift.io/sa.scc.supplemental-groups": "1000420000/10000",
+          "openshift.io/sa.scc.uid-range": "1000420000/10000"
+        }
+      },
+      "spec": {
+        "finalizers": [
+          "openshift.io/origin",
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "anotherproject",
+        "selfLink": "/oapi/v1/projects/anotherproject",
+        "uid": "2ee8264d-f442-11e6-a3da-123dee44c1c5",
+        "resourceVersion": "258451539",
+        "creationTimestamp": "2017-02-16T12:19:37Z",
+        "annotations": {
+          "openshift.io/description": "anotherproject description",
+          "openshift.io/display-name": "anotherproject display name",
+          "openshift.io/requester": "jgoncalv@redhat.com",
+          "openshift.io/sa.scc.mcs": "s0:c25,c5",
+          "openshift.io/sa.scc.supplemental-groups": "1000610000/10000",
+          "openshift.io/sa.scc.uid-range": "1000610000/10000"
+        }
+      },
+      "spec": {
+        "finalizers": [
+          "openshift.io/origin",
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    }
+  ]
+}
