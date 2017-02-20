@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Kwek Metrics.
-import requests
-# import api.constants as cfg
-# from urllib.parse import urljoin
-# PROJECTS_URL = urljoin(cfg.OS_URL, 'todos')
-# PROJECTS_URL = cfg.OS_URL + 'projects'
+
 import json
+
+import requests
 
 
 class HawkularAPIError(Exception):

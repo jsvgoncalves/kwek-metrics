@@ -3,7 +3,6 @@
 # This file is part of Kwek Metrics.
 """Kwek database config."""
 
-
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import scoped_session, sessionmaker
 

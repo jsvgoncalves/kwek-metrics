@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Kwek Metrics.
+
 import responses
 
 from api.hawkular import query_api

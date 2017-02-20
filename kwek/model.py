@@ -2,6 +2,7 @@
 #
 # This file is part of Kwek Metrics.
 """Kwek model."""
+
 from database import db
 
 

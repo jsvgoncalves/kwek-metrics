@@ -3,20 +3,19 @@
 # This file is part of Kwek Metrics.
 """ Kwek Views. """
 
-from flask import request, render_template, flash, Blueprint
-from model import Service, Metric
-from urlparse import urljoin
-from database import db
 import json
+from urlparse import urljoin
 
-# For the Form
+from flask import render_template, flash, Blueprint
 from flask.ext.wtf import Form
-from wtforms import StringField, IntegerField, BooleanField, SelectField
-from wtforms.validators import DataRequired, Regexp
+from wtforms import StringField
+from wtforms.validators import DataRequired
 from wtforms_alchemy import ModelForm
 
 from api.hawkular import get_os_projects
 from api.hawkular import get_metric
+from database import db
+from model import Service, Metric
 
 
 blueprint = Blueprint('kwek', __name__,

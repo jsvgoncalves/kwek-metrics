@@ -10,9 +10,9 @@
 #
 from __future__ import print_function
 from importlib import import_module
-import os
-import sys
+
 from flask import Flask
+
 from kwek.database import db
 
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Kwek Metrics.
+
 from kwek.model import Service as S
 from kwek.model import Metric as M
-from pytest import fail
 
 
 def test_service_insert(session):
