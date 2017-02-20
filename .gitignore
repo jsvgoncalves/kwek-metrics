@@ -66,3 +66,9 @@ examples/instance/
 
 # Database
 kwek.db
+
+# Ignore generated content
+static/
+
+# Front-end dev generated stuff
+node_modules/
