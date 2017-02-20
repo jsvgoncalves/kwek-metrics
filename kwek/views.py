@@ -43,14 +43,8 @@ class MetricForm(ModelForm, Form):
 
 @blueprint.route('/', methods=['GET', 'POST'])
 def index():
-    """Returns the newly added services since the last request.
-
-    API used by the backend application
-    """
-    services = []
-    for row in Service.query.all():
-        services.append(row)
-    return render_template('list.html', services=json.dumps(services))
+    """Home page."""
+    return render_template('list.html')
 
 
 @blueprint.route('/insert', methods=['GET'])
