@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Joao Goncalves
+# This file is part of Kwek Metrics.
 """ Kwek Views. """
 
 from flask import request, render_template, flash, Blueprint

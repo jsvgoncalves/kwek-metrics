@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Joao Goncalves
-from flask import url_for
+# This file is part of Kwek Metrics.
 from kwek.model import Service as S
 from kwek.model import Metric as M
 from pytest import fail

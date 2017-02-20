@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Joao Goncalves
+# This file is part of Kwek Metrics.
 """Kwek model."""
 from database import db
 

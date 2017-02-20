@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-# Joao Goncalves
-import pytest
-from app import create_app
+# This file is part of Kwek Metrics.
 from os.path import join as pj
 import os.path
+
+import pytest
+
+from app import create_app
 from kwek.database import db as _db
 
 

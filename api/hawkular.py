@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Joao Goncalves
+# This file is part of Kwek Metrics.
 import requests
 # import api.constants as cfg
 # from urllib.parse import urljoin

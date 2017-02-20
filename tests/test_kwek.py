@@ -1,8 +1,8 @@
-"""Module tests."""
 # -*- coding: utf-8 -*-
 #
-# Joao Goncalves
+# This file is part of Kwek Metrics.
 
+"""Module tests."""
 from __future__ import absolute_import, print_function
 
 from flask import Flask

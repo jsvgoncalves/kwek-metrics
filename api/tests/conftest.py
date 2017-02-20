@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Joao Goncalves
-import pytest
-import json
+# This file is part of Kwek Metrics.
 from os import path as osp
 
 mock_api_query_body = """

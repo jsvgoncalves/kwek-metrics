@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Joao Goncalves
+# This file is part of Kwek Metrics.
 
 METRICS_URL = 'https://metrics.engint.openshift.com/hawkular/'
 OS_URL = 'https://console.engint.openshift.com/oapi/v1/'
