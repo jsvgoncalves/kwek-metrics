@@ -72,3 +72,6 @@ static/
 
 # Front-end dev generated stuff
 node_modules/
+
+# Laravel mix generated
+mix-manifest.json

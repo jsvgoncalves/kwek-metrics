@@ -31,9 +31,9 @@ Make sure you have all front-end development dependencies installed:
 
     $ npm install
 
-To enter watch mode on gulp:
+To enter watch mode on mix:
 
-    $ gulp watch
+    $ npm run watch
 
 ### Virtualenvwrapper cheatsheet
 
