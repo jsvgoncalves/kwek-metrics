@@ -1,26 +1,95 @@
 {% extends "layout.html" %}
 
-
+<!-- <section class=".container-fluid content"> -->
 {% block body %}
+<div class="row panel panel-default">
+  <div class="panel-heading">Global Status <small>(total of {{projects|length}} projects)</small></div>
+  <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Metric</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Memory Usage</td>
+          <td>{{"{:.2f}".format(memory*0.000000953674)}} MiB</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>CPU Usage</td>
+          <td>{{"{:.2f}".format(cpu)}} Millicores</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Network Usage</td>
+          <td>{{"{:.2f}".format(network*0.0009765625)}} KiB/s</td>
+        </tr>
+      </tbody>
+    </table>
 
-<p>
-  You have access to {{projects|length}} projects.
-</p>
-<p>
-  In total, here are your stats:
-</p>
-<ul>
-  <li>Memory Usage: {{"{:.2f}".format(memory*0.000000953674)}} MiB</li>
-  <li>CPU Usage: {{cpu}} Millicores</li>
-  <li>Network Usage: {{"{:.2f}".format(network*0.0009765625)}} KiB/s</li>
-</ul>
+  </div>
+</div>
 
-{% for project in projects %}
-	<a href="{{url_for('kwek.metrics', project=project['metadata']['name'])}}">
-    <h3>{{project['metadata']['annotations']['openshift.io/display-name']}}</h3>
-	</a>
-{% endfor %}
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Your Projects
+  </div>
+  <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Memory</th>
+          <th>CPU</th>
+          <th>Network</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in projects %}
+          <tr>
+            <td>{{loop.index}}</td>
+            <td>
+              <a href="{{url_for('kwek.metrics', project=project['metadata']['name'])}}">
+                {{project['metadata']['annotations']['openshift.io/display-name']}}
+              </a>
+            </td>
+            <td>
+            {% if memories[project['metadata']['name']] %}
+              {{"{:.2f}".format((memories[project['metadata']['name']])*0.000000953674)}} MiB
+            {% else %}
+              0
+            {% endif %}
+            </td>
+            <td>
+              {% if cpus[project['metadata']['name']] %}
+              {{"{:.2f}".format(cpus[project['metadata']['name']])}} Millicores
+            {% else %}
+              0
+            {% endif %}
+            </td>
+            <td>
+              {% if networks[project['metadata']['name']] %}
+              {{"{:.2f}".format((networks[project['metadata']['name']])*0.0009765625)}} KiB/s
+            {% else %}
+              0
+            {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
 
 
 
 {% endblock %}
+<!-- </section class=".container-fluid content"> -->

@@ -41,24 +41,11 @@ class MetricForm(ModelForm, Form):
     api_name = StringField(u'Service', validators=[DataRequired()])
 
 
-@blueprint.route('/', methods=['GET', 'POST'])
+@blueprint.route('/', methods=['GET'])
 def index():
-    """Home page."""
-    return render_template('list.html')
-
-
-@blueprint.route('/insert', methods=['GET'])
-def insert():
-    services = []
-    for row in Service.query.all():
-        services.append(row)
-    return render_template(
-        'insert_service.html',
-        services=services)
-
-
-@blueprint.route('/stats', methods=['GET'])
-def stats():
+    """Home page.
+    Return a list of all the projects and it's top-level metrics.
+    """
     s = Service.query.filter_by().first()
     try:
         projects = get_os_projects(
@@ -69,6 +56,9 @@ def stats():
         flash(err.args)
 
     # Get Metrics for each of the projects
+    memories = {}
+    cpus = {}
+    networks = {}
     total_memory = 0
     total_cpu = 0
     total_network = 0
@@ -80,6 +70,21 @@ def stats():
                 s.token,
                 'memory%2Fusage')
             total_memory += memory[0]['avg']
+            memories[project['metadata']['name']] = memory[0]['avg']
+            cpu = get_metric(
+                urljoin(s.url, 'gauges/data'),
+                project['metadata']['name'],
+                s.token,
+                'cpu%2Fusage_rate')
+            total_cpu += cpu[0]['avg']
+            cpus[project['metadata']['name']] = cpu[0]['avg']
+            network = get_metric(
+                urljoin(s.url, 'gauges/data'),
+                project['metadata']['name'],
+                s.token,
+                'network%2Frx_rate')
+            total_network += network[0]['avg']
+            networks[project['metadata']['name']] = network[0]['avg']
         except ValueError as err:
             flash(project['metadata']['name'], err.message)
         except KeyError as err:
@@ -89,8 +94,21 @@ def stats():
         'stats.html',
         projects=projects,
         memory=total_memory,
+        memories=memories,
         cpu=total_cpu,
-        network=total_network)
+        cpus=cpus,
+        network=total_network,
+        networks=networks)
+
+
+@blueprint.route('/insert', methods=['GET'])
+def insert():
+    services = []
+    for row in Service.query.all():
+        services.append(row)
+    return render_template(
+        'insert_service.html',
+        services=services)
 
 
 @blueprint.route('/metrics/<project>', methods=['GET'])
