@@ -1,28 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Kwek Metrics</title>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
-    </head>
-    <body>
+  <head>
+    <meta charset="utf-8">
+    <title>Kwek Metrics</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
+  </head>
+  <body>
+    <header class="container page-header">
+      <h1>Kwek Metrics <small>for OpenShift</small></h1>
+    </header>
+
+    <section class="container errors">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="errors__flashes row alert alert-danger">
+            {% for category, message in messages %}
+              <div class="col-md-4 offset-md-4">Error: {{ message + "," + category }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+    </section>
+
+    <section class="container">
+      {% block body %}{% endblock %}
+    </section>
+
+
+    <footer class="container">
+      <nav class="row navbar navbar-default">
         <div class="container">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div class="flashes">
-                {% for category, message in messages %}
-                <p>{{ category }} : {{ message }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-            <h1>Kwek Metrics</h1>
-            {% block body %}{% endblock %}
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="{{ url_for('kwek.index')}}">Home</a></li>
+              <li><a href="{{ url_for('kwek.insert')}}">Manage Service Keys</a></li>
+            </ul>
+          </div>
         </div>
-    </body>
-    <footer>
-      <a href="{{ url_for('kwek.index')}}">Home</a>
-      <a href="{{ url_for('kwek.insert')}}">Manage Service Keys</a>
-      <a href="{{ url_for('kwek.stats')}}">Check Global Status</a>
+      </nav>
     </footer>
+  </body>
 </html>
