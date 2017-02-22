@@ -48,7 +48,7 @@ def index():
     s = Service.query.filter_by().first()
     try:
         projects = get_os_projects(
-            'https://console.engint.openshift.com/oapi/v1/projects',
+            urljoin(s.os_url, 'projects'),
             s.token)
     except ValueError as err:
         projects = {}
@@ -87,7 +87,7 @@ def index():
         try:
             for metric, cfg in metrics.iteritems():
                 v = get_metric(
-                    urljoin(s.url, cfg['endpoint']),
+                    urljoin(s.hwk_url, cfg['endpoint']),
                     project['metadata']['name'],
                     s.token,
                     cfg['tag'])
@@ -131,19 +131,19 @@ def metrics(project):
     try:
         # !TODO: Adopt same logic as index():
         memory = get_metric(
-            urljoin(s.url, 'gauges/data'),
+            urljoin(s.hwk_url, 'gauges/data'),
             project,
             s.token,
             'memory%2Fusage')
 
         cpu = get_metric(
-            urljoin(s.url, 'gauges/data'),
+            urljoin(s.hwk_url, 'gauges/data'),
             project,
             s.token,
             'cpu%2Fusage_rate')
 
         network = get_metric(
-            urljoin(s.url, 'gauges/data'),
+            urljoin(s.hwk_url, 'gauges/data'),
             project,
             s.token,
             'network%2Frx_rate')

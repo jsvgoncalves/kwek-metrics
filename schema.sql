@@ -4,8 +4,10 @@ create table services (
   -- ENCRYPTED
   -- name TEXT NOT NULL,
   name TEXT NOT NULL,
-  -- url TEXT NOT NULL,
-  url TEXT NOT NULL,
+  -- hawkular_url TEXT NOT NULL,
+  hwk_url TEXT NOT NULL,
+  -- openshift_url TEXT NOT NULL,
+  os_url TEXT NOT NULL,
   -- token TEXT NOT NULL,
   token TEXT NOT NULL
 );
