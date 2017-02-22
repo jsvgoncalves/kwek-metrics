@@ -4,7 +4,6 @@
 
 """Kwek Metric web app views."""
 
-import json
 from urlparse import urljoin
 
 from flask import render_template, flash, Blueprint
@@ -55,50 +54,65 @@ def index():
         projects = {}
         flash(err.args)
 
-    # Get Metrics for each of the projects
-    memories = {}
-    cpus = {}
-    networks = {}
-    total_memory = 0
-    total_cpu = 0
-    total_network = 0
+    # Metrics to query for
+    # !TODO: Extract to database
+    metrics = {
+        'memory': {
+            'name': 'Memory Usage',
+            'endpoint': 'gauges/data',
+            'tag': 'memory%2Fusage',
+            'unit': 'MiB',
+            'conversion': 0.000000953674
+        },
+        'cpu': {
+            'name': 'CPU Usage',
+            'endpoint': 'gauges/data',
+            'tag': 'cpu%2Fusage_rate',
+            'unit': 'Millicores',
+            'conversion': 1
+        },
+        'network': {
+            'name': 'Network Usage',
+            'endpoint': 'gauges/data',
+            'tag': 'network%2Frx_rate',
+            'unit': 'KiB/s',
+            'conversion': 0.0009765625
+        }
+    }
+
+    # Get the values for each metric, per project
+    values = {}
     for project in projects:
+        values[project['metadata']['name']] = {}
         try:
-            memory = get_metric(
-                urljoin(s.url, 'gauges/data'),
-                project['metadata']['name'],
-                s.token,
-                'memory%2Fusage')
-            total_memory += memory[0]['avg']
-            memories[project['metadata']['name']] = memory[0]['avg']
-            cpu = get_metric(
-                urljoin(s.url, 'gauges/data'),
-                project['metadata']['name'],
-                s.token,
-                'cpu%2Fusage_rate')
-            total_cpu += cpu[0]['avg']
-            cpus[project['metadata']['name']] = cpu[0]['avg']
-            network = get_metric(
-                urljoin(s.url, 'gauges/data'),
-                project['metadata']['name'],
-                s.token,
-                'network%2Frx_rate')
-            total_network += network[0]['avg']
-            networks[project['metadata']['name']] = network[0]['avg']
+            for metric, cfg in metrics.iteritems():
+                v = get_metric(
+                    urljoin(s.url, cfg['endpoint']),
+                    project['metadata']['name'],
+                    s.token,
+                    cfg['tag'])
+                values[project['metadata']['name']][metric] = v
         except ValueError as err:
             flash(project['metadata']['name'], err.message)
         except KeyError as err:
             flash(project['metadata']['name'], err.message)
 
+    # Calculate the aggregated value of each metric
+    totals = {}
+    for metric in metrics:
+        totals[metric] = 0
+        for project in projects:
+            # Get the last measure for the given metric
+            last_measure = values[project['metadata']['name']][metric][0]
+            # And sum it to our total per metric
+            totals[metric] += last_measure['avg']
+
     return render_template(
         'stats.html',
         projects=projects,
-        memory=total_memory,
-        memories=memories,
-        cpu=total_cpu,
-        cpus=cpus,
-        network=total_network,
-        networks=networks)
+        metrics=metrics,
+        values=values,
+        totals=totals)
 
 
 @blueprint.route('/insert', methods=['GET'])
@@ -115,6 +129,7 @@ def insert():
 def metrics(project):
     s = Service.query.filter_by().first()
     try:
+        # !TODO: Adopt same logic as index():
         memory = get_metric(
             urljoin(s.url, 'gauges/data'),
             project,

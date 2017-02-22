@@ -14,21 +14,16 @@
         </tr>
       </thead>
       <tbody>
+        {% for metric in totals %}
         <tr>
-          <td>1</td>
-          <td>Memory Usage</td>
-          <td>{{"{:.2f}".format(memory*0.000000953674)}} MiB</td>
+          <td>{{loop.index}}</td>
+          <td>{{metrics[metric]['name']}}</td>
+          <td>
+            {{"{:.2f}".format((totals[metric])*metrics[metric]['conversion'])}}
+            {{metrics[metric]['unit']}}
+          </td>
         </tr>
-        <tr>
-          <td>2</td>
-          <td>CPU Usage</td>
-          <td>{{"{:.2f}".format(cpu)}} Millicores</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>Network Usage</td>
-          <td>{{"{:.2f}".format(network*0.0009765625)}} KiB/s</td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
 
@@ -45,9 +40,11 @@
         <tr>
           <th>#</th>
           <th>Name</th>
-          <th>Memory</th>
-          <th>CPU</th>
-          <th>Network</th>
+          {% for metric in metrics %}
+          <th>
+            {{metrics[metric]['name']}}
+          </th>
+          {% endfor %}
         </tr>
       </thead>
       <tbody>
@@ -59,27 +56,12 @@
                 {{project['metadata']['annotations']['openshift.io/display-name']}}
               </a>
             </td>
-            <td>
-            {% if memories[project['metadata']['name']] %}
-              {{"{:.2f}".format((memories[project['metadata']['name']])*0.000000953674)}} MiB
-            {% else %}
-              0
-            {% endif %}
-            </td>
-            <td>
-              {% if cpus[project['metadata']['name']] %}
-              {{"{:.2f}".format(cpus[project['metadata']['name']])}} Millicores
-            {% else %}
-              0
-            {% endif %}
-            </td>
-            <td>
-              {% if networks[project['metadata']['name']] %}
-              {{"{:.2f}".format((networks[project['metadata']['name']])*0.0009765625)}} KiB/s
-            {% else %}
-              0
-            {% endif %}
-            </td>
+            {% for metric in metrics %}
+              <td>
+                {{"{:.2f}".format((values[project['metadata']['name']][metric][0]['avg'])*metrics[metric]['conversion'])}}
+                {{metrics[metric]['unit']}}
+              </td>
+            {% endfor %}
           </tr>
         {% endfor %}
       </tbody>
