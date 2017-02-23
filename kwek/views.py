@@ -53,45 +53,20 @@ def index():
     except ValueError as err:
         projects = {}
         flash(err.args)
-
-    # Metrics to query for
-    # !TODO: Extract to database
-    metrics = {
-        'memory': {
-            'name': 'Memory Usage',
-            'endpoint': 'gauges/data',
-            'tag': 'memory%2Fusage',
-            'unit': 'MiB',
-            'conversion': 0.000000953674
-        },
-        'cpu': {
-            'name': 'CPU Usage',
-            'endpoint': 'gauges/data',
-            'tag': 'cpu%2Fusage_rate',
-            'unit': 'Millicores',
-            'conversion': 1
-        },
-        'network': {
-            'name': 'Network Usage',
-            'endpoint': 'gauges/data',
-            'tag': 'network%2Frx_rate',
-            'unit': 'KiB/s',
-            'conversion': 0.0009765625
-        }
-    }
+    metrics = Metric.query.all()
 
     # Get the values for each metric, per project
     values = {}
     for project in projects:
         values[project['metadata']['name']] = {}
         try:
-            for metric, cfg in metrics.iteritems():
+            for metric in metrics:
                 v = get_metric(
-                    urljoin(s.hwk_url, cfg['endpoint']),
+                    urljoin(s.hwk_url, metric.endpoint),
                     project['metadata']['name'],
                     s.token,
-                    cfg['tag'])
-                values[project['metadata']['name']][metric] = v
+                    metric.tag)
+                values[project['metadata']['name']][metric.name] = v
         except ValueError as err:
             flash(project['metadata']['name'], err.message)
         except KeyError as err:
@@ -100,12 +75,12 @@ def index():
     # Calculate the aggregated value of each metric
     totals = {}
     for metric in metrics:
-        totals[metric] = 0
+        totals[metric.name] = 0
         for project in projects:
             # Get the last measure for the given metric
-            last_measure = values[project['metadata']['name']][metric][0]
+            last_measure = values[project['metadata']['name']][metric.name][0]
             # And sum it to our total per metric
-            totals[metric] += last_measure['avg']
+            totals[metric.name] += last_measure['avg']
 
     return render_template(
         'stats.html',

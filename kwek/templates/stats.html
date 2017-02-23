@@ -14,13 +14,13 @@
         </tr>
       </thead>
       <tbody>
-        {% for metric in totals %}
+        {% for metric in metrics %}
         <tr>
-          <td>{{loop.index}}</td>
-          <td>{{metrics[metric]['name']}}</td>
+          <td>{{metric.id}}</td>
+          <td>{{metric.display_name}}</td>
           <td>
-            {{"{:.2f}".format((totals[metric])*metrics[metric]['conversion'])}}
-            {{metrics[metric]['unit']}}
+            {{"{:.2f}".format((totals[metric.name])*metric.conversion)}}
+            {{metric.unit}}
           </td>
         </tr>
         {% endfor %}
@@ -42,7 +42,7 @@
           <th>Name</th>
           {% for metric in metrics %}
           <th>
-            {{metrics[metric]['name']}}
+            {{metric.display_name}}
           </th>
           {% endfor %}
         </tr>
@@ -58,8 +58,8 @@
             </td>
             {% for metric in metrics %}
               <td>
-                {{"{:.2f}".format((values[project['metadata']['name']][metric][0]['avg'])*metrics[metric]['conversion'])}}
-                {{metrics[metric]['unit']}}
+                {{"{:.2f}".format((values[project['metadata']['name']][metric.name][0]['avg'])*metric.conversion)}}
+                {{metric.unit}}
               </td>
             {% endfor %}
           </tr>

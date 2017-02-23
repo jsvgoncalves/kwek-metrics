@@ -22,18 +22,26 @@ class Service(db.Model):
         self.os_url = os_url
 
     def __repr__(self):
-        return '<Service %r : %r (%r)>' % (self.name, self.os_url)
+        return '<Service %r : %r>' % (self.name, self.os_url)
 
 
 class Metric(db.Model):
     """Database model for SQLAlchemy."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
-    api_name = db.Column(db.String(120), unique=True)
+    display_name = db.Column(db.String(120))
+    endpoint = db.Column(db.String(80))
+    tag = db.Column(db.String(80), unique=True)
+    unit = db.Column(db.String(80))
+    conversion = db.Column(db.Float)
 
-    def __init__(self, name, api_name):
+    def __init__(self, name, display_name, endpoint, tag, unit, conversion):
         self.name = name
-        self.api_name = api_name
+        self.display_name = display_name
+        self.endpoint = endpoint
+        self.tag = tag
+        self.unit = unit
+        self.conversion = conversion
 
     def __repr__(self):
-        return '<Metric %r : %r>' % (self.name, self.api_name)
+        return '<Metric %r : %r>' % (self.name, self.display_name)
