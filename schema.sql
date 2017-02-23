@@ -16,4 +16,5 @@ create table metrics (
   tag TEXT NOT NULL,
   unit TEXT NOT NULL,
   conversion REAL NOT NULL,
+  color TEXT NOT NULL
 );

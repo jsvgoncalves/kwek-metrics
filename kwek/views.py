@@ -103,32 +103,21 @@ def insert():
 @blueprint.route('/metrics/<project>', methods=['GET'])
 def metrics(project):
     s = Service.query.filter_by().first()
+    metrics = Metric.query.all()
+    values = {}
     try:
-        # !TODO: Adopt same logic as index():
-        memory = get_metric(
-            urljoin(s.hwk_url, 'gauges/data'),
-            project,
-            s.token,
-            'memory%2Fusage')
-
-        cpu = get_metric(
-            urljoin(s.hwk_url, 'gauges/data'),
-            project,
-            s.token,
-            'cpu%2Fusage_rate')
-
-        network = get_metric(
-            urljoin(s.hwk_url, 'gauges/data'),
-            project,
-            s.token,
-            'network%2Frx_rate')
+        for metric in metrics:
+            values[metric.name] = get_metric(
+                urljoin(s.hwk_url, metric.endpoint),
+                project,
+                s.token,
+                metric.tag)
     except ValueError as err:
         flash(err.args)
     return render_template('metrics.html',
                            project=project,
-                           memory=memory,
-                           cpu=cpu,
-                           network=network)
+                           metrics=metrics,
+                           values=values)
 
 
 @blueprint.route('/insert', methods=['POST'])

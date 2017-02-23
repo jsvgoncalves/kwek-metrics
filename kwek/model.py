@@ -34,14 +34,17 @@ class Metric(db.Model):
     tag = db.Column(db.String(80), unique=True)
     unit = db.Column(db.String(80))
     conversion = db.Column(db.Float)
+    color = db.Column(db.String(80))
 
-    def __init__(self, name, display_name, endpoint, tag, unit, conversion):
+    def __init__(self, name, display_name, endpoint,
+                 tag, unit, conversion, color):
         self.name = name
         self.display_name = display_name
         self.endpoint = endpoint
         self.tag = tag
         self.unit = unit
         self.conversion = conversion
+        self.color = color
 
     def __repr__(self):
         return '<Metric %r : %r>' % (self.name, self.display_name)
