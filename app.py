@@ -26,9 +26,12 @@ def register_blueprints(app, blueprints):
     """
     try:
         for b in blueprints:
-            # All blueprints should have a views.py file with the blueprint
+            # All blueprints should have a views module with the blueprints
             mod = import_module(b + '.views')
-            app.register_blueprint(mod.blueprint)
+            # We want to iterate the blueprints, as a module can register
+            # several of them
+            for bp in mod.blueprints:
+                app.register_blueprint(bp)
     except Exception, e:
         print('register_blueprint(): ', str(e))
 
@@ -47,6 +50,7 @@ def create_app(cfg_file='app.cfg'):
     register_blueprints(app, blueprints)
 
     return app
+
 
 if __name__ == '__main__':
     app = create_app()

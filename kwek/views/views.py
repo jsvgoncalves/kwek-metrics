@@ -7,19 +7,19 @@
 from urlparse import urljoin
 
 from flask import render_template, flash, Blueprint
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import StringField
 from wtforms.validators import DataRequired
 from wtforms_alchemy import ModelForm
 
 from api.hawkular import get_os_projects
 from api.hawkular import get_metric
-from database import db
-from model import Service, Metric
+from kwek.database import db
+from kwek.models import Service, Metric
 
 
 blueprint = Blueprint('kwek', __name__,
-                      template_folder='templates')
+                      template_folder='../templates')
 
 
 class ServiceForm(ModelForm, Form):
@@ -92,9 +92,7 @@ def index():
 
 @blueprint.route('/insert', methods=['GET'])
 def insert():
-    services = []
-    for row in Service.query.all():
-        services.append(row)
+    services = [row for row in Service.query.all()]
     return render_template(
         'insert_service.html',
         services=services)
