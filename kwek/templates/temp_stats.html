@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+<!-- <section class=".container-fluid content"> -->
+{% block body %}
+
+{% for metric in metrics %}
+  <p>{{totals[metric.name]}}</p>
+{% endfor %}
+{% for total in totals %}
+  <p>{{total}}</p>
+{% endfor %}
+
+{% endblock %}
+<!-- </section class=".container-fluid content"> -->

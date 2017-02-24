@@ -15,7 +15,7 @@
         {% if messages %}
           <div class="errors__flashes row alert alert-danger">
             {% for category, message in messages %}
-              <div class="col-md-4 offset-md-4">Error: {{ message + "," + category }}</div>
+              <div class="col-md-4 offset-md-4">Error: {{ message}} {{category }}</div>
             {% endfor %}
           </div>
         {% endif %}
