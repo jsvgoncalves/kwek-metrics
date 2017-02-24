@@ -7,7 +7,36 @@
 from database import db
 
 
-class Service(db.Model):
+def to_dict(inst, cls):
+    """Return a dict with the sql alchemy table columns."""
+    convert = dict()
+    # add your coversions for things like datetime's
+    # and what-not that aren't serializable.
+    d = dict()
+    for c in cls.__table__.columns:
+        v = getattr(inst, c.name)
+        if c.type in convert.keys() and v is not None:
+            try:
+                d[c.name] = convert[c.type](v)
+            except:
+                d[c.name] = "Error:  Failed to covert using ", str(convert[
+                                                                   c.type])
+        elif v is None:
+            d[c.name] = str()
+        else:
+            d[c.name] = v
+    return d
+
+
+class Serializable(object):
+    """Mixin to make objects serializable."""
+    @property
+    def serialized(self):
+        """Return object data in easily serializeable format"""
+        return to_dict(self, self.__class__)
+
+
+class Service(db.Model, Serializable):
     """Database model for SQLAlchemy."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
@@ -25,7 +54,7 @@ class Service(db.Model):
         return '<Service %r : %r>' % (self.name, self.os_url)
 
 
-class Metric(db.Model):
+class Metric(db.Model, Serializable):
     """Database model for SQLAlchemy."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
