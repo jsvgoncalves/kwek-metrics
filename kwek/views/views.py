@@ -6,7 +6,7 @@
 
 from urlparse import urljoin
 
-from flask import render_template, flash, Blueprint
+from flask import render_template, flash, Blueprint, redirect, url_for
 from flask_wtf import Form
 from wtforms import StringField
 from wtforms.validators import DataRequired
@@ -46,11 +46,14 @@ def index():
     Return a list of all the projects and it's top-level metrics.
     """
     s = Service.query.filter_by().first()
+    if s is None:
+        flash('', 'No Service found. Please add one below.')
+        return redirect(url_for('kwek.insert'))
     try:
         projects = get_os_projects(
             urljoin(s.os_url, 'projects'),
             s.token)
-    except ValueError as err:
+    except (ValueError, AttributeError) as err:
         projects = {}
         flash(err.args)
     metrics = Metric.query.all()
