@@ -40,9 +40,9 @@ class Service(db.Model, Serializable):
     """Database model for SQLAlchemy."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
-    token = db.Column(db.String(120), unique=True)
-    hwk_url = db.Column(db.String(120), unique=True)
-    os_url = db.Column(db.String(120), unique=True)
+    token = db.Column(db.String(120))
+    hwk_url = db.Column(db.String(120))
+    os_url = db.Column(db.String(120))
 
     def __init__(self, name, token, hwk_url, os_url):
         self.name = name
