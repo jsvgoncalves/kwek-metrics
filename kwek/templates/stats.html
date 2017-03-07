@@ -58,8 +58,10 @@
             </td>
             {% for metric in metrics %}
               <td>
+              {% if values[project['metadata']['name']][metric.name][0] %}
                 {{"{:.2f}".format((values[project['metadata']['name']][metric.name][0]['avg'])*metric.conversion)}}
                 {{metric.unit}}
+              {% endif %}
               </td>
             {% endfor %}
           </tr>

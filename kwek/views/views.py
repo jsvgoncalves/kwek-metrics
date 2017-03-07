@@ -80,10 +80,14 @@ def index():
     for metric in metrics:
         totals[metric.name] = 0
         for project in projects:
-            # Get the last measure for the given metric
-            last_measure = values[project['metadata']['name']][metric.name][0]
-            # And sum it to our total per metric
-            totals[metric.name] += last_measure['avg']
+            try:
+                # Get the last measure for the given metric
+                last_measure = values[
+                    project['metadata']['name']][metric.name][0]
+                # And sum it to our total per metric
+                totals[metric.name] += last_measure['avg']
+            except KeyError as err:
+                flash('Error retrieving metric [KeyError]', 'danger')
 
     return render_template(
         'stats.html',
