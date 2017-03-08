@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Add New Service
+  </div>
+  <div class="panel-body">
+    {% from "_formhelpers.html" import render_field %}
+    <form method="POST" action="{{ url_for('.insert') }}">
+      {{ form.csrf_token }}
+      {{ render_field(form.name) }}
+      {{ render_field(form.token) }}
+      {{ render_field(form.os_url) }}
+      {{ render_field(form.hwk_url) }}
+    <input type="submit" value="Create">
+    </form>
+  </div>
+</div>
+
+{% endblock %}

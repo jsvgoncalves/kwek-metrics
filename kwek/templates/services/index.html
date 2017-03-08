@@ -3,12 +3,61 @@
 
 {% block body %}
 
-<ul>
-{% for service in services %}
-  <li>{{service}}</li>
-{% endfor %}
-</ul>
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Your Services
+  </div>
+  <div class="panel-body">
+  {% if services %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>OpenShift API URL</th>
+          <th>Hawkular API URL</th>
+          <th>Token</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for service in services %}
+          <tr>
+            <td>{{service.id}}</td>
+            <td>{{service.name}}</td>
+            <td>{{service.os_url}}</td>
+            <td>{{service.hwk_url}}</td>
+            <td><em>hidden</em></td>
+            <td>
+              <a href="{{ url_for('.update', id=service.id) }}">Update/Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No Services. Start by adding one below.</p>
+  {% endif %}
 
-<ul>
+  </div>
+</div>
+
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Add New Service
+  </div>
+  <div class="panel-body">
+    {% from "_formhelpers.html" import render_field %}
+    <form method="POST" action="{{ url_for('.insert') }}">
+      {{ form.csrf_token }}
+      {{ render_field(form.name) }}
+      {{ render_field(form.token) }}
+      {{ render_field(form.os_url) }}
+      {{ render_field(form.hwk_url) }}
+    <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+
 
 {% endblock %}

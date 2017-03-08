@@ -7,37 +7,14 @@
 from urlparse import urljoin
 
 from flask import render_template, flash, Blueprint, redirect, url_for
-from flask_wtf import Form
-from wtforms import StringField
-from wtforms.validators import DataRequired
-from wtforms_alchemy import ModelForm
 
 from api.hawkular import get_os_projects
 from api.hawkular import get_metric
-from kwek.database import db
 from kwek.models import Service, Metric
 
 
 blueprint = Blueprint('kwek', __name__,
                       template_folder='../templates')
-
-
-class ServiceForm(ModelForm, Form):
-    """Handle subscribe form neatly with WTForms."""
-    class Meta:
-        model = Service
-
-    name = StringField(u'Name:', validators=[DataRequired()])
-    token = StringField(u'Service', validators=[DataRequired()])
-
-
-class MetricForm(ModelForm, Form):
-    """Handle subscribe form neatly with WTForms."""
-    class Meta:
-        model = Metric
-
-    name = StringField(u'Name:', validators=[DataRequired()])
-    api_name = StringField(u'Service', validators=[DataRequired()])
 
 
 @blueprint.route('/', methods=['GET'])
@@ -97,14 +74,6 @@ def index():
         totals=totals)
 
 
-@blueprint.route('/insert', methods=['GET'])
-def insert():
-    services = [row for row in Service.query.all()]
-    return render_template(
-        'insert_service.html',
-        services=services)
-
-
 @blueprint.route('/metrics/<project>', methods=['GET'])
 def metrics(project):
     s = Service.query.filter_by().first()
@@ -123,28 +92,3 @@ def metrics(project):
                            project=project,
                            metrics=metrics,
                            values=values)
-
-
-@blueprint.route('/insert', methods=['POST'])
-def form_subscribe(data):
-    """Handle subscription form submission."""
-    try:
-        # Try to find an existing user to update
-        u = Service.query.filter_by(name=e_data['name']).first()
-        # !TODO: This requires refactoring..
-        if u:
-            # Update Service
-            u.name = e_data['name']
-            u.token = e_data['token']
-        else:
-            # Create new Service
-            u = Service(e_data['name'],
-                     e_data['token'])
-        db.session.add(u)
-        db.session.commit()
-        return True
-    except Exception, e:
-        print('form_subscribe():', str(e))
-        flash(u'Saving to database failed.', 'Error')
-        # Should return the errors (possibly duplicate or?)
-        return False

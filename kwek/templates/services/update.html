@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Edit <strong>{{service.name}}</strong> Service
+  </div>
+  <div class="panel-body">
+    {% from "_formhelpers.html" import render_field %}
+    <form method="POST" action="{{ url_for('.update', id=service.id) }}">
+      {{ form.csrf_token }}
+      {{ render_field(form.name) }}
+      {{ render_field(form.token) }}
+      {{ render_field(form.os_url) }}
+      {{ render_field(form.hwk_url) }}
+      <input type="submit" value="Edit">
+    </form>
+    <form method="POST" action="{{ url_for('.delete', id=service.id) }}">
+      <input type="submit" value="Delete">
+    </form>
+  </div>
+</div>
+
+{% endblock %}
