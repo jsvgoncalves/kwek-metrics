@@ -67,15 +67,15 @@ def index():
                 flash('Error retrieving metric [KeyError]', 'danger')
 
     return render_template(
-        'stats.html',
+        'index.html',
         projects=projects,
         metrics=metrics,
         values=values,
         totals=totals)
 
 
-@blueprint.route('/metrics/<project>', methods=['GET'])
-def metrics(project):
+@blueprint.route('/stats/<project>', methods=['GET'])
+def stats(project):
     s = Service.query.filter_by().first()
     metrics = Metric.query.all()
     values = {}
@@ -88,7 +88,7 @@ def metrics(project):
                 metric.tag)
     except ValueError as err:
         flash(err.args)
-    return render_template('metrics.html',
+    return render_template('stats.html',
                            project=project,
                            metrics=metrics,
                            values=values)

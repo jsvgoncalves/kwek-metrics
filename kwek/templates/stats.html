@@ -1,79 +1,87 @@
 {% extends "layout.html" %}
 
-<!-- <section class=".container-fluid content"> -->
 {% block body %}
-<div class="row panel panel-default">
-  <div class="panel-heading">Global Status <small>(total of {{projects|length}} projects)</small></div>
-  <div class="panel-body">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Metric</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for metric in metrics %}
-        <tr>
-          <td>{{metric.id}}</td>
-          <td>{{metric.display_name}}</td>
-          <td>
-            {{"{:.2f}".format((totals[metric.name])*metric.conversion)}}
-            {{metric.unit}}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-  </div>
-</div>
-
-<div class="row panel panel-default">
-  <div class="panel-heading">
-    Your Projects
-  </div>
-  <div class="panel-body">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          {% for metric in metrics %}
-          <th>
-            {{metric.display_name}}
-          </th>
-          {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for project in projects %}
-          <tr>
-            <td>{{loop.index}}</td>
-            <td>
-              <a href="{{url_for('kwek.metrics', project=project['metadata']['name'])}}">
-                {{project['metadata']['annotations']['openshift.io/display-name']}}
-              </a>
-            </td>
-            {% for metric in metrics %}
-              <td>
-              {% if values[project['metadata']['name']][metric.name][0] %}
-                {{"{:.2f}".format((values[project['metadata']['name']][metric.name][0]['avg'])*metric.conversion)}}
-                {{metric.unit}}
-              {% endif %}
-              </td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
 
 
+<h2>{{project}}</h2>
+
+<p>Current status:</p>
+{% for metric in metrics %}
+  <li>
+    {{metric.display_name}}:
+    {% if values[metric.name][0] %}
+      {{"{:.2f}".format((values[metric.name][0]['avg'])*metric.conversion)}}
+    {% endif %}
+    {{metric.unit}}
+  </li>
+{% endfor %}
 
 
+<h3>Memory Usage</h3>
+<svg id="memory" width="400" height="150"></svg>
+
+
+<h3>CPU Usage</h3>
+<svg id="cpu" width="400" height="150"></svg>
+
+
+<h3>Network</h3>
+<svg id="network" width="400" height="150"></svg>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+var WIDTH = 400,
+    HEIGHT = 150,
+    MARGINS = {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 100
+    }
+
+{% for metric in metrics %}
+  var {{metric.name}} = {{values[metric.name]|tojson|safe}};
+  var {{metric.name}}_vis = d3.select('#{{metric.name}}')
+  {{metric.name}}_xRange = d3.scaleLinear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min({{metric.name}}, function(d) {
+    return d.end;
+  }), d3.max({{metric.name}}, function(d) {
+    return d.end;
+  })]),
+  {{metric.name}}_yRange = d3.scaleLinear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min({{metric.name}}, function(d) {
+    return d.median/1024;
+  }), d3.max({{metric.name}}, function(d) {
+    return d.median/1024;
+  })]),
+  {{metric.name}}_xAxis = d3.axisBottom()
+  .scale({{metric.name}}_xRange),
+  {{metric.name}}_yAxis = d3.axisLeft()
+  .scale({{metric.name}}_yRange);
+
+  // Axis for {{metric.name}}
+  {{metric.name}}_vis.append('svg:g')
+  .attr('class', 'y axis')
+  .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
+  .call({{metric.name}}_yAxis);
+
+  // Define line function for {{metric.name}}
+  var lineFunc = d3.line()
+    .x(function(d) {
+      return {{metric.name}}_xRange(d.end);
+    })
+    .y(function(d) {
+      return {{metric.name}}_yRange(d.median/1024);
+    })
+    .curve(d3.curveLinear); // curveBasis
+
+  {{metric.name}}_vis.append('svg:path')
+  .attr('d', lineFunc({{metric.name}}))
+  .attr('stroke', '{{metric.color}}')
+  .attr('stroke-width', 2)
+  .attr('fill', 'none');
+
+{% endfor %}
+
+</script>
 
 {% endblock %}
-<!-- </section class=".container-fluid content"> -->
