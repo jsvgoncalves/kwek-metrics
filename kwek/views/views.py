@@ -24,8 +24,8 @@ def index():
     """
     s = Service.query.filter_by().first()
     if s is None:
-        flash('', 'No Service found. Please add one below.')
-        return redirect(url_for('kwek.insert'))
+        flash('No Service found. Please add one below.', 'danger')
+        return redirect(url_for('services.index'))
     try:
         projects = get_os_projects(
             urljoin(s.os_url, 'projects'),
