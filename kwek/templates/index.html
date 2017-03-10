@@ -53,7 +53,11 @@
             <td>{{loop.index}}</td>
             <td>
               <a href="{{url_for('kwek.stats', project=project['metadata']['name'])}}">
-                {{project['metadata']['annotations']['openshift.io/display-name']}}
+                {% if project['metadata']['annotations']['openshift.io/display-name'] %}
+                  {{project['metadata']['annotations']['openshift.io/display-name']}}
+                {% else %}
+                  {{project['metadata']['name']}}
+                {% endif %}
               </a>
             </td>
             {% for metric in metrics %}
