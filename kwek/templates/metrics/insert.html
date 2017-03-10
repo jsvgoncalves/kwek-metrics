@@ -9,7 +9,7 @@
   </div>
   <div class="panel-body">
     {% from "_formhelpers.html" import render_field %}
-    <form method="POST" action="{{ url_for('.insert') }}">
+    <form class="form-group" method="POST" action="{{ url_for('.insert') }}">
       {{ form.csrf_token }}
       {{ render_field(form.name) }}
       {{ render_field(form.display_name) }}
@@ -18,7 +18,7 @@
       {{ render_field(form.unit) }}
       {{ render_field(form.conversion) }}
       {{ render_field(form.color) }}
-    <input type="submit" value="Create">
+      <button type="submit" class="btn btn-default">Submit</button>
     </form>
   </div>
 </div>
