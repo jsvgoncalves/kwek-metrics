@@ -62,9 +62,14 @@
             </td>
             {% for metric in metrics %}
               <td>
-              {% if values[project['metadata']['name']][metric.name][0] %}
-                {{"{:.2f}".format((values[project['metadata']['name']][metric.name][0]['avg'])*metric.conversion)}}
-                {{metric.unit}}
+              {# There is no 'avg' property when the project is empty #}
+              {% if not values[project['metadata']['name']][metric.name][0]['empty'] %}
+                {# Multiply the metric value by the given conversion ratio #}
+                {{ "{:.2f}".format(
+                    (values[project['metadata']['name']][metric.name][0]['avg'])
+                    * metric.conversion)
+                }}
+                {{ metric.unit }}
               {% endif %}
               </td>
             {% endfor %}
