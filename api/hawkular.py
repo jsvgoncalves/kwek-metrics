@@ -9,6 +9,12 @@ import json
 
 import requests
 
+from api import DISABLE_WARNINGS
+
+if DISABLE_WARNINGS:
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 
 class HawkularAPIError(Exception):
     def __init__(self, message):
