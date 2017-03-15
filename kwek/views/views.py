@@ -7,6 +7,7 @@
 from urlparse import urljoin
 
 from flask import render_template, flash, Blueprint, redirect, url_for
+from requests import ConnectionError
 
 from api.hawkular import get_os_projects
 from api.hawkular import get_metric
@@ -30,9 +31,9 @@ def index():
         projects = get_os_projects(
             urljoin(s.os_url, 'projects'),
             s.token)
-    except (ValueError, AttributeError) as err:
+    except (ValueError, AttributeError, ConnectionError) as err:
         projects = {}
-        flash(err.args)
+        flash(err.message, 'danger')
     metrics = Metric.query.all()
 
     # Get the values for each metric, per project
@@ -47,10 +48,8 @@ def index():
                     s.token,
                     metric.tag)
                 values[project['metadata']['name']][metric.name] = v
-        except ValueError as err:
-            flash(project['metadata']['name'], err.message)
-        except KeyError as err:
-            flash(project['metadata']['name'], err.message)
+        except (ValueError, KeyError, ConnectionError) as err:
+            flash(err.message, 'danger')
 
     # Calculate the aggregated value of each metric
     totals = {}
@@ -64,7 +63,7 @@ def index():
                 # And sum it to our total per metric
                 totals[metric.name] += last_measure['avg']
             except KeyError as err:
-                flash('Error retrieving metric [KeyError]', 'danger')
+                flash(err.message, 'danger')
 
     return render_template(
         'index.html',
@@ -86,8 +85,8 @@ def stats(project):
                 project,
                 s.token,
                 metric.tag)
-    except ValueError as err:
-        flash(err.args)
+    except (ValueError, ConnectionError) as err:
+        flash(err.message, 'danger')
     return render_template('stats.html',
                            project=project,
                            metrics=metrics,
