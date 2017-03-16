@@ -112,6 +112,8 @@ def update(id):
         abort(404)
 
     if request.method == 'GET':
+        # Do not display the current token
+        service.token = 'hidden'
         form = ServiceForm(obj=service)
         return render_template(
             'services/update.html',
@@ -126,7 +128,9 @@ def update(id):
                 # !TODO: is there a better way to do this?
                 #        check form.data for a dict
                 service.name = form.name.data
-                service.token = form.token.data
+                # Update the token only if the value was changed
+                if form.token.data != 'hidden':
+                    service.token = form.token.data
                 service.hwk_url = form.hwk_url.data
                 service.os_url = form.os_url.data
 
