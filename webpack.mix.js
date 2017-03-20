@@ -4,5 +4,5 @@
 
 const { mix } = require('laravel-mix');
 
-mix.js('kwek-ui/app.js', 'static/js')
+mix.js('js/index.js', 'static/js')
    .sass('css/style.scss', 'static/css');

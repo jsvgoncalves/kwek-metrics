@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+<!-- <section class=".container-fluid content"> -->
+{% block body %}
+<div class="row panel panel-default">
+  <div class="panel-heading">Global Status <small>(total of {{projects|length}} projects)</small></div>
+  <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Metric</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for metric in metrics %}
+        <tr>
+          <td>{{metric.id}}</td>
+          <td>{{metric.display_name}}</td>
+          <td>
+            {{"{:.2f}".format((totals[metric.name])*metric.conversion)}}
+            {{metric.unit}}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Your Projects
+  </div>
+  <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          {% for metric in metrics %}
+          <th>
+            {{metric.display_name}}
+          </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in projects %}
+          <tr>
+            <td>{{loop.index}}</td>
+            <td>
+              <a href="{{url_for('kwek.stats', project=project['metadata']['name'])}}">
+                {% if project['metadata']['annotations']['openshift.io/display-name'] %}
+                  {{project['metadata']['annotations']['openshift.io/display-name']}}
+                {% else %}
+                  {{project['metadata']['name']}}
+                {% endif %}
+              </a>
+            </td>
+            {% for metric in metrics %}
+              <td>
+              {# There is no 'avg' property when the project is empty #}
+              {% if not values[project['metadata']['name']][metric.name][0]['empty'] %}
+                {# Multiply the metric value by the given conversion ratio #}
+                {{ "{:.2f}".format(
+                    (values[project['metadata']['name']][metric.name][0]['avg'])
+                    * metric.conversion)
+                }}
+                {{ metric.unit }}
+              {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+{% endblock %}
+<!-- </section class=".container-fluid content"> -->

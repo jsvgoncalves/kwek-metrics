@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Edit <strong>{{metric.name}}</strong> Metric
+  </div>
+  <div class="panel-body">
+    {% from "_formhelpers.html" import render_field %}
+    <form class="form-group" method="POST" action="{{ url_for('.update', id=metric.id) }}">
+      {{ form.csrf_token }}
+      {{ render_field(form.name) }}
+      {{ render_field(form.display_name) }}
+      {{ render_field(form.endpoint) }}
+      {{ render_field(form.tag) }}
+      {{ render_field(form.unit) }}
+      {{ render_field(form.conversion) }}
+      {{ render_field(form.color) }}
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+    <form method="POST" action="{{ url_for('.delete', id=metric.id) }}">
+      <button type="submit" class="btn btn-default">Delete</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

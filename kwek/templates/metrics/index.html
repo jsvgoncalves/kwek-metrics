@@ -3,12 +3,74 @@
 
 {% block body %}
 
-<ul>
-{% for metric in metrics %}
-  <li>{{metric}}</li>
-{% endfor %}
-</ul>
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Your Metrics
+  </div>
+  <div class="panel-body">
+  {% if metrics %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Display Name</th>
+          <th>Endpoint</th>
+          <th>Tag</th>
+          <th>Unit</th>
+          <th>Conversion</th>
+          <th>Color</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for metric in metrics %}
+          <tr>
+            <td>{{metric.id}}</td>
+            <td>{{metric.name}}</td>
+            <td>{{metric.display_name}}</td>
+            <td>{{metric.endpoint}}</td>
+            <td>{{metric.tag}}</td>
+            <td>{{metric.unit}}</td>
+            <td>{{metric.conversion}}</td>
+            <td>{{metric.color}}</td>
+            <td>
+              <a href="{{ url_for('.update', id=metric.id) }}">Update/Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No Metrics. Start by adding one below.</p>
+  {% endif %}
 
-<ul>
+  </div>
+</div>
+
+<div class="row panel panel-default">
+  <div class="panel-heading">
+    Add New Metric
+  </div>
+  <div class="panel-body">
+    {% from "_formhelpers.html" import render_field %}
+    <form class="form-group" method="POST" action="{{ url_for('.insert') }}">
+      {{ form.csrf_token }}
+      {{ render_field(form.name) }}
+      {{ render_field(form.display_name) }}
+      {{ render_field(form.endpoint) }}
+      {{ render_field(form.tag) }}
+      {{ render_field(form.unit) }}
+      {{ render_field(form.conversion) }}
+      {{ render_field(form.color) }}
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+<script>
+
+</script>
 
 {% endblock %}

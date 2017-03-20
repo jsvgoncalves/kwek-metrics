@@ -1,5 +1,5 @@
-drop table if exists services;
-create table services (
+drop table if exists service;
+create table service (
   id INTEGER primary key AUTOINCREMENT,
   name TEXT NOT NULL,
   hwk_url TEXT NOT NULL,
@@ -7,8 +7,8 @@ create table services (
   token TEXT NOT NULL
 );
 
-drop table if exists metrics;
-create table metrics (
+drop table if exists metric;
+create table metric (
   id INTEGER primary key AUTOINCREMENT,
   name TEXT NOT NULL,
   display_name TEXT NOT NULL,

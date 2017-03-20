@@ -8,6 +8,13 @@
 import json
 
 import requests
+from requests import ConnectionError
+
+from api import DISABLE_WARNINGS
+
+if DISABLE_WARNINGS:
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 class HawkularAPIError(Exception):
@@ -63,11 +70,11 @@ def _build_hawkular_payload(metric):
 def get_metric(url, tenant, auth, metric):
     headers = _build_hawkular_headers(tenant, auth)
     payload = _build_hawkular_payload(metric)
-    r = query_api(url, headers, payload)
     try:
+        r = query_api(url, headers, payload)
         return json.loads(r.text)
-    except ValueError as err:
-        raise ValueError(err.message, {'response': r.text})
+    except (ValueError, ConnectionError) as err:
+        raise err
 
 
 def _build_os_headers(auth=""):
@@ -91,11 +98,11 @@ def _build_os_headers(auth=""):
 
 def get_os_projects(url, auth):
     headers = _build_os_headers(auth)
-    r = query_api(url, headers)
     try:
+        r = query_api(url, headers)
         return json.loads(r.text)['items']
-    except ValueError as err:
-        raise ValueError(err.message, {'response': r.text})
+    except (ValueError, ConnectionError) as err:
+        raise err
 
 
 def query_api(url, headers={}, payload={}):
@@ -109,5 +116,8 @@ def query_api(url, headers={}, payload={}):
     Returns:
         Request: The Request object
     """
-    r = requests.get(url, headers=headers, verify=False, params=payload)
-    return r
+    try:
+        r = requests.get(url, headers=headers, verify=False, params=payload)
+        return r
+    except ConnectionError as err:
+        raise err
