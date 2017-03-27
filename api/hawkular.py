@@ -24,6 +24,13 @@ class HawkularAPIError(Exception):
         super(HawkularAPIError, self).__init__(message)
 
 
+class APIAuthorizationError(Exception):
+    """Used in case of 401 request status."""
+    def __init__(self, message):
+        # Call the base class constructor with the parameters it needs
+        super(APIAuthorizationError, self).__init__(message)
+
+
 def _build_hawkular_headers(tentant="", auth=""):
     """Generate the headers to access the API with successful auth.
 
@@ -115,9 +122,15 @@ def query_api(url, headers={}, payload={}):
 
     Returns:
         Request: The Request object
+
+    Raises:
+        ConnectionError: raised by requests.get()
+        APIAuthorizationError: in case the API returns 401 Unauthorized
     """
     try:
         r = requests.get(url, headers=headers, verify=False, params=payload)
+        if r.status_code == 401:
+            raise APIAuthorizationError('Unauthorized')
         return r
     except ConnectionError as err:
         raise err
