@@ -47,11 +47,11 @@ def index():
             {'conversion': 9.53674e-07,
              'display_name': 'Memory Usage',
              'name': 'memory', 'color': 'blue', 'tag': 'memory/usage',
-             'id': 2, 'unit': 'MiB'},
+             'id': 2, 'unit': 'MiB', 'maxvalue': 836868241},
             {'conversion': 1.0,
              'display_name': 'CPU Usage',
              'name': 'cpu', 'color': 'red', 'tag': 'cpu/usage_rate',
-             'id': 2, 'unit': 'Millicores'}
+             'id': 2, 'unit': 'Millicores', 'maxvalue': 0}
         ]
     }
 

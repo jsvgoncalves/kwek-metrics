@@ -22,6 +22,11 @@
             {{"{:.2f}".format((totals[metric.tag])*metric.conversion)}}
             {{values[metric.tag]}}
             {{metric.unit}}
+            {% if metric.maxvalue != 0 %}
+            (<strong>
+              {{"{:.2f}".format((totals[metric.tag] / metric.maxvalue)*100)}}%
+            </strong> of {{"{:.2f}".format((metric.maxvalue)*metric.conversion )}} {{metric.unit}} )
+            {% endif %}
           </td>
         </tr>
         {% endfor %}
