@@ -30,6 +30,7 @@ class MetricForm(ModelForm, Form):
     tag = StringField(u'tag:', validators=[InputRequired()])
     unit = StringField(u'unit:', validators=[InputRequired()])
     conversion = FloatField(u'conversion:', validators=[InputRequired()])
+    maxvalue = FloatField(u'maxvalue:', validators=[InputRequired()])
     color = StringField(u'color:', validators=[InputRequired()])
 
 
@@ -93,6 +94,7 @@ def insert():
                 form.tag.data,
                 form.unit.data,
                 form.conversion.data,
+                form.maxvalue.data,
                 form.color.data)
             db.session.add(metric)
             db.session.commit()
@@ -138,6 +140,7 @@ def update(id):
                 metric.tag = form.tag.data
                 metric.unit = form.unit.data
                 metric.conversion = form.conversion.data
+                metric.maxvalue = form.maxvalue.data
                 metric.color = form.color.data
 
                 # Do the update
