@@ -14,7 +14,7 @@ from api.hawkular import get_metric
 from api.hawkular import get_metrics
 from api.hawkular import APIAuthorizationError
 from kwek.models import Service, Metric
-
+from kwek.database import db
 
 blueprint = Blueprint('kwek', __name__,
                       template_folder='../templates')
@@ -80,7 +80,7 @@ def index():
                 name,
                 s.token,
                 tags,
-                metrics_pod['type'])
+                'pod_container')  # !TODO: Replace with dynamic value
             # Iterate over the values
             for k, v in v['gauge'].iteritems():
                 # Filter out `sti-build` values, e.g.:
@@ -127,3 +127,69 @@ def stats(project):
                            project=project,
                            metrics=metrics,
                            values=values)
+
+
+default_service = {
+    'name': 'OpenShift Dedicated',
+    'token': 'this_will_be_updated',
+    'hawkular': 'https://metrics.engint.openshift.com/hawkular/metrics/',
+    'openshift': 'https://console.engint.openshift.com/oapi/v1/'
+}
+
+
+default_metrics = {
+    'endpoint': 'metrics/stats/query',
+    'type': 'pod_container',
+    'queries': [
+        {'conversion': 9.53674e-07,
+         'display_name': 'Memory Usage',
+         'name': 'memory', 'color': 'blue', 'tag': 'memory/usage',
+         'id': 2, 'unit': 'MiB', 'max': 64424509440},
+        {'conversion': 1.0,
+         'display_name': 'CPU Usage',
+         'name': 'cpu', 'color': 'red', 'tag': 'cpu/usage_rate',
+         'id': 2, 'unit': 'Millicores', 'max': 16000}
+    ]
+}
+
+
+@blueprint.route('/defaults')
+def defaults():
+    try:
+        s = default_service
+        service = Service(s['name'], s['token'],
+                          s['hawkular'], s['openshift'])
+        db.session.add(service)
+        m0 = default_metrics['queries'][0]
+        m1 = default_metrics['queries'][1]
+        memory_metric = Metric(
+            m0['name'],
+            m0['display_name'],
+            default_metrics['endpoint'],
+            m0['tag'],
+            m0['unit'],
+            m0['conversion'],
+            m0['max'],
+            m0['color'])
+
+        cpu_metric = Metric(
+            m1['name'],
+            m1['display_name'],
+            default_metrics['endpoint'],
+            m1['tag'],
+            m1['unit'],
+            m1['conversion'],
+            m1['max'],
+            m1['color'])
+
+        db.session.add(memory_metric)
+        db.session.add(cpu_metric)
+        db.session.commit()
+        flash('Service `{}` created. Please update the token.'.format(
+            s['name']), 'success')
+        flash('Metric `{}` created.'.format(m0['name']), 'success')
+        flash('Metric `{}` created.'.format(m1['name']), 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error: {0}'.format(e.message), 'danger')
+    return redirect(url_for('services.index'))
