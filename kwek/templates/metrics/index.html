@@ -19,6 +19,7 @@
           <th>Tag</th>
           <th>Unit</th>
           <th>Conversion</th>
+          <th>Max. Value</th>
           <th>Color</th>
           <th></th>
         </tr>
@@ -33,6 +34,7 @@
             <td>{{metric.tag}}</td>
             <td>{{metric.unit}}</td>
             <td>{{metric.conversion}}</td>
+            <td>{{metric.maxvalue}}</td>
             <td>{{metric.color}}</td>
             <td>
               <a href="{{ url_for('.update', id=metric.id) }}">Update/Delete</a>
@@ -62,6 +64,7 @@
       {{ render_field(form.tag) }}
       {{ render_field(form.unit) }}
       {{ render_field(form.conversion) }}
+      {{ render_field(form.maxvalue) }}
       {{ render_field(form.color) }}
       <button type="submit" class="btn btn-default">Submit</button>
     </form>
