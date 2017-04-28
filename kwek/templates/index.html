@@ -19,7 +19,8 @@
           <td>{{metric.id}}</td>
           <td>{{metric.display_name}}</td>
           <td>
-            {{"{:.2f}".format((totals[metric.name])*metric.conversion)}}
+            {{"{:.2f}".format((totals[metric.tag])*metric.conversion)}}
+            {{values[metric.tag]}}
             {{metric.unit}}
           </td>
         </tr>
@@ -48,29 +49,24 @@
         </tr>
       </thead>
       <tbody>
-        {% for project in projects %}
+        {% for p in projects %}
           <tr>
             <td>{{loop.index}}</td>
             <td>
-              <a href="{{url_for('kwek.stats', project=project['metadata']['name'])}}">
-                {% if project['metadata']['annotations']['openshift.io/display-name'] %}
-                  {{project['metadata']['annotations']['openshift.io/display-name']}}
+              <a href="{{url_for('kwek.stats', project=p['metadata']['name'])}}">
+                {% if p['metadata']['annotations']['openshift.io/display-name'] %}
+                  {{p['metadata']['annotations']['openshift.io/display-name']}}
                 {% else %}
-                  {{project['metadata']['name']}}
+                  {{p['metadata']['name']}}
                 {% endif %}
               </a>
             </td>
             {% for metric in metrics %}
               <td>
-              {# There is no 'avg' property when the project is empty #}
-              {% if not values[project['metadata']['name']][metric.name][0]['empty'] %}
-                {# Multiply the metric value by the given conversion ratio #}
-                {{ "{:.2f}".format(
-                    (values[project['metadata']['name']][metric.name][0]['avg'])
-                    * metric.conversion)
+                {{"{:.2f}".format(
+                  (values[p['metadata']['name']].avg[metric.tag]) * metric.conversion)
                 }}
                 {{ metric.unit }}
-              {% endif %}
               </td>
             {% endfor %}
           </tr>
